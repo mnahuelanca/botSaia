@@ -277,9 +277,9 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    if (contactForm) {
-        contactForm.addEventListener('submit', handleContactForm);
-    }
+    //if (contactForm) {
+      //  contactForm.addEventListener('submit', handleContactForm);
+    //}
 
     window.addEventListener('scroll', throttle(handleNavbarScroll, 10));
     setupScrollAnimations();
