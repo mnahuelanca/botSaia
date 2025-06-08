@@ -5,7 +5,6 @@ const typingText = document.getElementById('typing-text');
 const contactForm = document.getElementById('contactForm');
 const whatsappBtn = document.getElementById('whatsapp-btn');
 
-
 // Typing Animation
 const phrases = [
     "🤖 Respuestas automáticas 24/7",
@@ -22,7 +21,7 @@ let typingDelay = 100;
 
 function typeEffect() {
     const currentPhrase = phrases[phraseIndex];
-    
+
     if (isDeleting) {
         typingText.textContent = currentPhrase.substring(0, charIndex - 1);
         charIndex--;
@@ -35,11 +34,11 @@ function typeEffect() {
 
     if (!isDeleting && charIndex === currentPhrase.length) {
         isDeleting = true;
-        typingDelay = 2000; // Pause before deleting
+        typingDelay = 2000;
     } else if (isDeleting && charIndex === 0) {
         isDeleting = false;
         phraseIndex = (phraseIndex + 1) % phrases.length;
-        typingDelay = 500; // Pause before typing next phrase
+        typingDelay = 500;
     }
 
     setTimeout(typeEffect, typingDelay);
@@ -49,23 +48,16 @@ function typeEffect() {
 function toggleMobileMenu() {
     hamburger.classList.toggle('active');
     navMenu.classList.toggle('active');
-    
-    // Prevent body scroll when menu is open
-    if (navMenu.classList.contains('active')) {
-        document.body.style.overflow = 'hidden';
-    } else {
-        document.body.style.overflow = 'auto';
-    }
+
+    document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : 'auto';
 }
 
-// Close mobile menu when clicking on links
 function closeMobileMenu() {
     hamburger.classList.remove('active');
     navMenu.classList.remove('active');
     document.body.style.overflow = 'auto';
 }
 
-// Smooth scroll for navigation links
 function smoothScroll(target) {
     const element = document.querySelector(target);
     if (element) {
@@ -80,7 +72,6 @@ function smoothScroll(target) {
     }
 }
 
-// Navbar scroll effect
 function handleNavbarScroll() {
     const navbar = document.querySelector('.navbar');
     if (window.scrollY > 50) {
@@ -92,7 +83,6 @@ function handleNavbarScroll() {
     }
 }
 
-// Animated counters for stats
 function animateCounters() {
     const counters = document.querySelectorAll('.stat-number');
     const speed = 200;
@@ -114,7 +104,6 @@ function animateCounters() {
     });
 }
 
-// Intersection Observer for scroll animations
 function setupScrollAnimations() {
     const observerOptions = {
         threshold: 0.1,
@@ -125,8 +114,7 @@ function setupScrollAnimations() {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
-                
-                // Trigger counter animation when stats section is visible
+
                 if (entry.target.classList.contains('stats-container')) {
                     animateCounters();
                 }
@@ -134,7 +122,6 @@ function setupScrollAnimations() {
         });
     }, observerOptions);
 
-    // Observe elements for animation
     const animatedElements = document.querySelectorAll('.service-card, .benefit-item, .stats-container, .contact-method');
     animatedElements.forEach(el => {
         el.classList.add('fade-in');
@@ -142,62 +129,46 @@ function setupScrollAnimations() {
     });
 }
 
-// Contact form handling
 function handleContactForm(e) {
     e.preventDefault();
-    
+
     const formData = new FormData(contactForm);
-    const nombre = formData.get('nombre');
-    const email = formData.get('email');
-    const telefono = formData.get('telefono');
+    const nombre = formData.get('nombre')?.trim();
+    const email = formData.get('email')?.trim();
+    const telefono = formData.get('telefono')?.trim();
     const servicio = formData.get('servicio');
     const mensaje = formData.get('mensaje');
-    
-    // Form validation
+
     if (!nombre || !email || !servicio) {
         showNotification('Por favor completa todos los campos requeridos.', 'error');
         return;
     }
-    
+
     if (!validateEmail(email)) {
         showNotification('Por favor ingresa un email válido.', 'error');
         return;
     }
-    
-    // Show loading state
+
     const submitBtn = contactForm.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
     submitBtn.textContent = 'Enviando...';
     submitBtn.classList.add('loading');
-    
-    // Simulate form submission (replace with actual API call)
+
     setTimeout(() => {
-        // Create WhatsApp message
         const whatsappMessage = createWhatsAppMessage(nombre, email, telefono, servicio, mensaje);
-        
-        // Reset form
         contactForm.reset();
-        
-        // Reset button
         submitBtn.textContent = originalText;
         submitBtn.classList.remove('loading');
-        
-        // Show success message
         showNotification('¡Mensaje enviado! Te contactaremos pronto.', 'success');
-        
-        // Optional: Open WhatsApp with pre-filled message
         // window.open(`https://wa.me/1234567890?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
-        
     }, 2000);
 }
 
-// Email validation
 function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
 }
 
-// Create WhatsApp message from form data
 function createWhatsAppMessage(nombre, email, telefono, servicio, mensaje) {
     return `🤖 *Nueva Consulta - BOTNAME*\n\n` +
            `👤 *Nombre:* ${nombre}\n` +
@@ -208,25 +179,19 @@ function createWhatsAppMessage(nombre, email, telefono, servicio, mensaje) {
            `_Consulta generada desde la web_`;
 }
 
-// Show notification
 function showNotification(message, type = 'info') {
-    // Remove existing notifications
-    const existingNotifications = document.querySelectorAll('.notification');
-    existingNotifications.forEach(notification => notification.remove());
-    
+    document.querySelectorAll('.notification').forEach(n => n.remove());
+
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     notification.innerHTML = `
         <div class="notification-content">
-            <span class="notification-icon">
-                ${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}
-            </span>
+            <span class="notification-icon">${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span>
             <span class="notification-message">${message}</span>
             <button class="notification-close">&times;</button>
         </div>
     `;
-    
-    // Add styles for notification
+
     notification.style.cssText = `
         position: fixed;
         top: 100px;
@@ -241,63 +206,40 @@ function showNotification(message, type = 'info') {
         animation: slideInRight 0.3s ease;
         font-weight: 500;
     `;
-    
-    const closeBtn = notification.querySelector('.notification-close');
-    closeBtn.style.cssText = `
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.2rem;
-        margin-left: 1rem;
-        cursor: pointer;
-        opacity: 0.8;
-    `;
-    
-    closeBtn.addEventListener('click', () => notification.remove());
-    
+
+    notification.querySelector('.notification-close').addEventListener('click', () => notification.remove());
+
     document.body.appendChild(notification);
-    
-    // Auto remove after 5 seconds
+
     setTimeout(() => {
-        if (notification.parentNode) {
-            notification.remove();
-        }
+        notification.remove();
     }, 5000);
 }
 
-// WhatsApp button animation and tracking
 function setupWhatsAppButton() {
     let isVisible = false;
-    
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                if (!isVisible) {
-                    whatsappBtn.style.animation = 'pulse 2s infinite';
-                    isVisible = true;
-                }
+            if (entry.isIntersecting && !isVisible) {
+                whatsappBtn.style.animation = 'pulse 2s infinite';
+                isVisible = true;
             }
         });
     }, { threshold: 0.1 });
-    
-    // Start observing when user scrolls past hero section
+
     const heroSection = document.getElementById('inicio');
     if (heroSection) {
         observer.observe(heroSection);
     }
-    
-    // Track WhatsApp button clicks
+
     whatsappBtn.addEventListener('click', () => {
-        // Analytics tracking could go here
         console.log('WhatsApp button clicked');
     });
 }
 
-// Lazy loading for images (if you add images later)
 function setupLazyLoading() {
     const images = document.querySelectorAll('img[data-src]');
-    
-    const imageObserver = new IntersectionObserver((entries, observer) => {
+    const imageObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const img = entry.target;
@@ -307,34 +249,25 @@ function setupLazyLoading() {
             }
         });
     });
-    
+
     images.forEach(img => imageObserver.observe(img));
 }
 
-// Performance optimization: Throttle scroll events
 function throttle(func, wait) {
     let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
+    return function (...args) {
         clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
+        timeout = setTimeout(() => func(...args), wait);
     };
 }
 
-// Initialize everything when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Start typing animation
+document.addEventListener('DOMContentLoaded', function () {
     setTimeout(typeEffect, 1000);
-    
-    // Setup event listeners
+
     if (hamburger) {
         hamburger.addEventListener('click', toggleMobileMenu);
     }
-    
-    // Navigation links
+
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -343,57 +276,45 @@ document.addEventListener('DOMContentLoaded', function() {
             closeMobileMenu();
         });
     });
-    
-    // Contact form
+
     if (contactForm) {
         contactForm.addEventListener('submit', handleContactForm);
     }
-    
-    // Scroll events
+
     window.addEventListener('scroll', throttle(handleNavbarScroll, 10));
-    
-    // Setup animations and observers
     setupScrollAnimations();
     setupWhatsAppButton();
     setupLazyLoading();
-    
-    // Close mobile menu when clicking outside
-    document.addEventListener('click', function(e) {
+
+    document.addEventListener('click', function (e) {
         if (!navMenu.contains(e.target) && !hamburger.contains(e.target)) {
             closeMobileMenu();
         }
     });
-    
-    // Close mobile menu on window resize
-    window.addEventListener('resize', function() {
+
+    window.addEventListener('resize', function () {
         if (window.innerWidth > 768) {
             closeMobileMenu();
         }
     });
-    
-    // Add CSS for notifications animation
+
     const style = document.createElement('style');
     style.textContent = `
         @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
-        
-        .notification-content {
-            display: flex;
-            align-items: center;
+        .notification-content { display: flex; align-items: center; }
+        .notification-icon { margin-right: 0.5rem; }
+        .notification-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            margin-left: 1rem;
+            cursor: pointer;
+            opacity: 0.8;
         }
-        
-        .notification-icon {
-            margin-right: 0.5rem;
-        }
-        
         .notification-close:hover {
             opacity: 1 !important;
         }
@@ -401,53 +322,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.head.appendChild(style);
 });
 
-// Error handling
-window.addEventListener('error', function(e) {
+window.addEventListener('error', function (e) {
     console.error('JavaScript Error:', e.error);
-});
-
-// Service Worker registration (for future PWA features)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        // navigator.serviceWorker.register('/sw.js')
-        //     .then(function(registration) {
-        //         console.log('SW registered: ', registration);
-        //     })
-        //     .catch(function(registrationError) {
-        //         console.log('SW registration failed: ', registrationError);
-        //     });
-    });
-}
-// Contact Form Submission with Validation and Alert
-
-contactForm.addEventListener('submit', function(e) {
-  e.preventDefault(); // Evitar envío automático para mostrar alerta
-
-  // Validación mínima, por ejemplo, que nombre y email no estén vacíos
-    const nombre = this.nombre.value.trim();
-    const email = this.email.value.trim();
-
-    if (!nombre || !email) {
-        alert('Por favor completa los campos requeridos.');
-        return;
-    }
-
-    // Enviar el formulario manualmente
-    fetch(this.action, {
-        method: 'POST',
-        body: new FormData(this),
-        headers: {
-        'Accept': 'application/json'
-        }
-    }).then(response => {
-        if (response.ok) {
-        alert('¡Mensaje enviado con éxito! Te contactaremos pronto.');
-        contactForm.reset();
-        } else {
-        alert('Hubo un problema al enviar el mensaje, por favor intentá de nuevo.');
-        }
-    }).catch(error => {
-        alert('Error de conexión, por favor intentá más tarde.');
-        console.error(error);
-    });
 });
