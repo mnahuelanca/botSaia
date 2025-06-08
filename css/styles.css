@@ -136,6 +136,13 @@ body {
     border-radius: 2px;
 }
 
+.logo-img {
+    height: 60px; /* Ajustalo según el diseño */
+    max-width: 150px;
+    object-fit: contain;
+}
+
+
 /* Hero Section */
 .hero {
     min-height: 100vh;
@@ -738,6 +745,12 @@ body {
     color: rgba(255, 255, 255, 0.6);
     font-size: 0.9rem;
 }
+
+.footer-logo {
+    height: 70px;
+    margin-bottom: 10px;
+}
+
 
 /* Responsive Design */
 @media (max-width: 768px) {
