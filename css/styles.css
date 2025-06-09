@@ -1049,3 +1049,13 @@ body {
 html {
     scroll-behavior: smooth;
 }
+
+.footer-contact a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-contact a:hover {
+    color: var(--primary-color)
+}
